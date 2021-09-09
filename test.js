@@ -1,15 +1,10 @@
 const { List } = require("immutable");
-const {
-  all,
-  any,
-  mapcat,
-  listToList,
-  map,
-  juxt,
-  filter,
-  compose,
-  reduceList,
-} = require("./index");
+const { mapcat, map, juxt, filter, compose } = require("./operations");
+const { listToList, reduceList } = require("./collections");
+
+// TODO(uri): implement as transducers.
+const all = reduceList((state, current) => state && current, true);
+const any = reduceList((state, current) => state || current, false);
 
 const testReduce = reduceList((s, c) => s + c, 0)(List.of(1, 2, 3)) == 6;
 const testCompose =
@@ -44,7 +39,7 @@ const testJuxt = listToList(
   )
 )(List.of(1, 2, 3, 4, 5)).equals(List.of(List.of(2, 3), List.of(2)));
 
-const testMapcat = listToList(mapcat((x) => List.of(x, x)))(
+const testMapcat = listToList(mapcat(reduceList)((x) => List.of(x, x)))(
   List.of(1, 2)
 ).equals(List.of(1, 1, 2, 2));
 const testAny = any(List.of(true, true, false, true));
