@@ -3,12 +3,12 @@ const {
   all,
   any,
   mapcat,
-  toList,
+  listToList,
   map,
   juxt,
   filter,
   compose,
-   reduceList,
+  reduceList,
 } = require("./index");
 
 const testReduce = reduceList((s, c) => s + c, 0)(List.of(1, 2, 3)) == 6;
@@ -18,20 +18,20 @@ const testCompose =
     (x) => x + 1,
     (x) => x.size
   )(List.of("hi")) == 4;
-const testFilter = toList(filter((x) => x < 3))(List.of(1, 2, 3, 4, 5)).equals(
-  List.of(1, 2)
-);
-const testMap = toList(map((x) => x < 3))(List.of(1, 2, 3, 4, 5)).equals(
+const testFilter = listToList(filter((x) => x < 3))(
+  List.of(1, 2, 3, 4, 5)
+).equals(List.of(1, 2));
+const testMap = listToList(map((x) => x < 3))(List.of(1, 2, 3, 4, 5)).equals(
   List.of(true, true, false, false, false)
 );
-const testComposeAndTransduce = toList(
+const testComposeAndTransduce = listToList(
   compose(
     filter((x) => x < 3),
     map((x) => x + 1)
   )
 )(List.of(1, 2, 3, 4, 5)).equals(List.of(2, 3));
 
-const testJuxt = toList(
+const testJuxt = listToList(
   juxt(
     compose(
       filter((x) => x < 3),
@@ -44,9 +44,9 @@ const testJuxt = toList(
   )
 )(List.of(1, 2, 3, 4, 5)).equals(List.of(List.of(2, 3), List.of(2)));
 
-const testMapcat = toList(mapcat((x) => List.of(x, x)))(List.of(1, 2)).equals(
-  List.of(1, 1, 2, 2)
-);
+const testMapcat = listToList(mapcat((x) => List.of(x, x)))(
+  List.of(1, 2)
+).equals(List.of(1, 1, 2, 2));
 const testAny = any(List.of(true, true, false, true));
 const testAll = !all(List.of(true, true, false, true));
 
