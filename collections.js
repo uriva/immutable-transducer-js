@@ -29,11 +29,15 @@ const reduceArray = reduce(
 const conjArray = (state, current) => [...state, current];
 
 const fromList = transduce(reduceList);
+const fromArray = transduce(reduceArray);
 
 const listToList = fromList(conjList, List());
-
+const arrayToArray = fromArray(conjArray, []);
+const arrayToList = fromArray(conjList, List());
 module.exports = {
   listToList,
+  arrayToList,
   reduceArray,
+  arrayToArray,
   reduceList,
 };

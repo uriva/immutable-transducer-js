@@ -1,15 +1,17 @@
 const { List } = require("immutable");
-const { reduceArray } = require("./collections");
+const { reduceArray, arrayToList } = require("./collections");
 
 const compose =
   (...functions) =>
   (initial) =>
     reduceArray((s, v) => v(s), initial)(functions.reverse());
 
+const callWith = x => f => f(x)
+
 const juxt =
   (...transducers) =>
   (step) => {
-    const reducers = List(transducers.map((t) => t(step)));
+    const reducers = arrayToList(map(callWith(step)))(transducers);
     return (state, current) =>
       reducers.map((r, i) => r(state.size ? state.get(i) : List(), current));
   };
