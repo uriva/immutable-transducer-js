@@ -8,10 +8,10 @@ const {
   juxt,
   filter,
   compose,
-  reduce,
+   reduceList,
 } = require("./index");
 
-const testReduce = reduce((s, c) => s + c, 0)(List.of(1, 2, 3)) == 6;
+const testReduce = reduceList((s, c) => s + c, 0)(List.of(1, 2, 3)) == 6;
 const testCompose =
   compose(
     (x) => x * 2,

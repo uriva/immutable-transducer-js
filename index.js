@@ -1,14 +1,17 @@
 const { List } = require("immutable");
 
-const reduce = (reducer, initial) => (collection) =>
+const reduceList = (reducer, initial) => (collection) =>
   collection.size
-    ? reduce(reducer, reducer(initial, collection.get(0)))(collection.slice(1))
+    ? reduceList(
+        reducer,
+        reducer(initial, collection.get(0))
+      )(collection.slice(1))
     : initial;
 
 const compose =
   (...functions) =>
   (initial) =>
-    reduce((s, v) => v(s), initial)(List(functions).reverse());
+    reduceList((s, v) => v(s), initial)(List(functions).reverse());
 
 const juxt =
   (...transducers) =>
@@ -23,16 +26,26 @@ const map = (f) => (step) => (state, current) => step(state, f(current));
 const filter = (f) => (step) => (state, current) =>
   f(current) ? step(state, current) : state;
 
-const concat = (step) => (state, current) => reduce(step, state)(current);
+const concat = (step) => (state, current) => reduceList(step, state)(current);
 
 const mapcat = (f) => compose(map(f), concat);
 
 const transduce = (reducer, initial) => (transducer) => (collection) =>
-  reduce(transducer(reducer), initial)(collection);
+  reduceList(transducer(reducer), initial)(collection);
 
 const toList = transduce((state, current) => state.push(current), List());
 
-const all = reduce((state, current) => state && current, true);
-const any = reduce((state, current) => state || current, false);
+const all = reduceList((state, current) => state && current, true);
+const any = reduceList((state, current) => state || current, false);
 
-module.exports = { all, any, mapcat, toList, filter, map,juxt, compose, reduce };
+module.exports = {
+  all,
+  any,
+  mapcat,
+  toList,
+  filter,
+  map,
+  juxt,
+  compose,
+  reduceList,
+};
