@@ -1,12 +1,15 @@
 const { List } = require("immutable");
 
-const reduceList = (reducer, initial) => (collection) =>
-  collection.size
-    ? reduceList(
-        reducer,
-        reducer(initial, collection.get(0))
-      )(collection.slice(1))
-    : initial;
+const reduce = (head, tail, empty) => (reducer, initial) => (collection) =>
+  empty(collection)
+    ? initial
+    : reduceList(reducer, reducer(initial, head(collection)))(tail(collection));
+
+const reduceList = reduce(
+  (x) => x.get(0),
+  (x) => x.slice(1),
+  (x) => !x.size
+);
 
 const compose =
   (...functions) =>
