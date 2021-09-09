@@ -32,7 +32,10 @@ const fromList = transduce(reduceList);
 const fromArray = transduce(reduceArray);
 
 const listToList = fromList(conjList, List());
+
+// Quadratic, don't use for big arrays.
 const arrayToArray = fromArray(conjArray, []);
+
 const arrayToList = fromArray(conjList, List());
 module.exports = {
   listToList,
